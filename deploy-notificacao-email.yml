@@ -1,16 +1,21 @@
-- name: Send Email Notification
+# Enviar notificação por email
+      - name: Send Email Notification
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.EMAIL_HOST }}
           server_port: ${{ secrets.EMAIL_PORT }}
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Deploy realizado com sucesso no VPS!"
+          subject: "🚀 Deploy ${{ job.status }} no VPS!"
           body: |
-            Deploy realizado com sucesso! 🚀
-            Repositório: ${{ github.repository }}
-            Branch: ${{ github.ref_name }}
-            Commit: ${{ github.sha }}
-            Mensagem do Commit: "${{ github.event.head_commit.message }}"
+            Deploy ${{ job.status }}! ${{ job.status == 'success' && '🚀' || '❌' }}
+            
+            🏢  Repositório: ${{ github.repository }}
+            🌿  Branch: ${{ github.ref_name }}
+            🔗  Commit: ${{ github.sha }}
+            📝  Mensagem do Commit: "${{ github.event.head_commit.message }}"
+            👤  Autor do Commit: ${{ github.event.head_commit.author.name }}
+            🕒  Data do Commit: ${{ github.event.head_commit.timestamp }}
           to: ${{ secrets.EMAIL_TO }}
           from: ${{ secrets.EMAIL_USERNAME }}
+        if: always()
